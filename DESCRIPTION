@@ -1,6 +1,5 @@
 Package: clustSIGNAL_workshop
-Title: Spatial transcriptomics data analysis – spatially-aware clustering with 
-clustSIGNAL
+Title: Spatial transcriptomics data analysis – spatially-aware clustering with clustSIGNAL
 Version: 1.0.0
 Authors@R: 
     c(person("Pratibha", "Panwar", email = "pratibhapanwar.4@gmail.com",
@@ -16,22 +15,20 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
-Depends: 
-    Biobase,
-    clustSIGNAL,
-    distances,
-    cluster,
-    aricode,
-    dplyr,
-    ggplot2,
-    scater,
-    patchwork,
-    scattermore
-Suggests: 
-    knitr,
-    rmarkdown,
-    pkgdown
+RoxygenNote: 7.3.2
+Depends: Biobase,
+  clustSIGNAL,
+  distances,
+  cluster,
+  aricode,
+  dplyr,
+  ggplot2,
+  scater,
+  patchwork,
+  scattermore
+Suggests: knitr,
+  rmarkdown,
+  pkgdown
 URL: https://sydneybiox.github.io/clustSIGNAL_workshop/
 BugReports: https://github.com/SydneyBioX/clustSIGNAL_workshop/issues
 VignetteBuilder: knitr
