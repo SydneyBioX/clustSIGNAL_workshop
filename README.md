@@ -18,7 +18,7 @@ Below is a list of tasks we will go through during the workshop, and what the at
 
 | Task                                       | Objective   |
 |--------------------------------------------|-------------|
-| Concept behind clustSIGNAL                 | Discription of how clustSIGNAL works as a spatial clustering method. How does clustSIGNAL embed spatial information into the data and how that affects clustering.
+| Concept behind clustSIGNAL                 | Description of how clustSIGNAL works as a spatial clustering method. How does clustSIGNAL embed spatial information into the data and how that affects clustering.
 | Method parameters                          | Learn about the different clustering parameters available in clustSIGNAL, and understand how they can affect the clustering output. 
 | How to run clustSIGNAL                     | Perform clustering on spatial transcriptomics data with clustSIGNAL. Also, learn what sort of outputs can be obtained from running the method.
 | Assessing biological relevance of clusters | Investigate the biological relevance of the clusters obtained from running clustSIGNAL.
