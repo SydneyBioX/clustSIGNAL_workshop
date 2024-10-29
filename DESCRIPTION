@@ -1,4 +1,4 @@
-Package: clustSIGNAL_workshop
+Package: clustSIGNALworkshop
 Title: Spatial transcriptomics data analysis – spatially-aware clustering with clustSIGNAL
 Version: 1.0.0
 Authors@R: 
