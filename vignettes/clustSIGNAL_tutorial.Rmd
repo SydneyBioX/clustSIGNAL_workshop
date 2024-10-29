@@ -3,15 +3,11 @@ title: "clustSIGNAL tutorial"
 author:
   - Pratibha Panwar, Boyi Guo, Haowen Zhou, Stephanie Hicks, Shila Ghazanfar
 date: "`r Sys.Date()`"
-output:
-  BiocStyle::html_document:
-    toc_float: true
-  BiocStyle::pdf_document: default
-package: clustSIGNAL
-vignette: |
-    %\VignetteEngine{knitr::rmarkdown}
-    %\VignetteIndexEntry{clustSIGNAL tutorial}
-    %\VignetteEncoding{UTF-8}
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{clustSIGNAL tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -20,6 +16,9 @@ knitr::opts_chunk$set(
   warning = FALSE
   )
 ```
+
+## Section
+
 
 # Overview
 
