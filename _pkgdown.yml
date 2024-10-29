@@ -1,4 +1,4 @@
-url: https://seandavi.github.io/BuildABiocWorkshop
+url: https://sydneybiox.github.io/clustSIGNAL_workshop
 
 template:
   params:
@@ -6,13 +6,14 @@ template:
     #ganalytics: UA-99999999-9
 
 home:
-  title: "BuildABiocWorkshop"
+  title: "Spatial transcriptomics data analysis – spatially-aware clustering with 
+clustSIGNAL"
   type: inverse
 
 
 navbar:
   right:
    - icon: fa-github
-     href: https://github.com/seandavi/BuildABiocWorkshop
+     href: https://github.com/SydneyBioX/clustSIGNAL_workshop
      
 
