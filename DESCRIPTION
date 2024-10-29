@@ -1,16 +1,18 @@
-Package: BuildABiocWorkshop
-Title: Bioconductor or R Workshop Template and Github Actions
-Version: 2.0.1
+Package: clustSIGNAL_workshop
+Title: Spatial transcriptomics data analysis – spatially-aware clustering with 
+clustSIGNAL
+Version: 0.99.0
 Authors@R: 
-    person(given = "Sean",
-           family = "Davis",
+    person(given = "Pratibha",
+           family = "Panwar",
            role = c("aut", "cre"),
-           email = "seandavi@gmail.com",
-           comment = c(ORCID = "0000-0002-8991-6458"))
-Description: This package serves as a template for using github actions to 
-    prepare a Bioconductor Workshop package for use. In particular,
-    a pkgdown website and docker image are generated based on workflow 
-    settings. 
+           email = "pratibhapanwar.4@gmail.com",
+           comment = c(ORCID = "0000-0002-7437-7084"))
+Description: This workshop serves as a tutorial for using clustSIGNAL
+    (clustering of Spatially Informed Gene expression with Neighbourhood 
+    Adapted Learning) - a method for adaptively smoothing and clustering 
+    gene expression data obtained from molecule-resolved spatial transcriptomics 
+    technologies. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -21,8 +23,17 @@ Depends:
 Suggests: 
     knitr,
     rmarkdown,
-    pkgdown
-URL: https://seandavi.github.io/BuildABiocWorkshop/
-BugReports: https://github.com/seandavi/BuildABiocWorkshop/issues/new/choose
+    pkgdown,
+    clustSIGNAL,
+    distances,
+    cluster,
+    aricode,
+    dplyr,
+    ggplot2,
+    scater,
+    patchwork,
+    scattermore
+URL: https://sydneybiox.github.io/clustSIGNAL_workshop/
+BugReports: https://github.com/SydneyBioX/clustSIGNAL_workshop/issues
 VignetteBuilder: knitr
-DockerImage: ghcr.io/seandavi/buildabiocworkshop:latest
+DockerImage: ghcr.io/sydneybiox/clustsignal_workshop:latest
