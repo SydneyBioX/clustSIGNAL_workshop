@@ -1,13 +1,12 @@
 Package: clustSIGNAL_workshop
 Title: Spatial transcriptomics data analysis – spatially-aware clustering with 
 clustSIGNAL
-Version: 0.99.0
+Version: 1.0.0
 Authors@R: 
-    person(given = "Pratibha",
-           family = "Panwar",
-           role = c("aut", "cre"),
-           email = "pratibhapanwar.4@gmail.com",
-           comment = c(ORCID = "0000-0002-7437-7084"))
+    c(person("Pratibha", "Panwar", email = "pratibhapanwar.4@gmail.com",
+           role = c("aut", "cre"), comment = c(ORCID = "0000-0002-7437-7084")),
+      person("Shila", "Ghazanfar", email = "shazanfar@gmail.com", 
+           role = c("aut", "ctb"), comment = c(ORCID = "0000-0001-7861-6997")))
 Description: This workshop serves as a tutorial for using clustSIGNAL
     (clustering of Spatially Informed Gene expression with Neighbourhood 
     Adapted Learning) - a method for adaptively smoothing and clustering 
@@ -19,12 +18,8 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
 Depends: 
-    Biobase
-Suggests: 
-    knitr,
-    rmarkdown,
-    pkgdown,
-    SydneyBioX/clustSIGNAL,
+    Biobase,
+    clustSIGNAL,
     distances,
     cluster,
     aricode,
@@ -33,6 +28,10 @@ Suggests:
     scater,
     patchwork,
     scattermore
+Suggests: 
+    knitr,
+    rmarkdown,
+    pkgdown
 URL: https://sydneybiox.github.io/clustSIGNAL_workshop/
 BugReports: https://github.com/SydneyBioX/clustSIGNAL_workshop/issues
 VignetteBuilder: knitr
