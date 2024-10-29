@@ -24,7 +24,7 @@ Suggests:
     knitr,
     rmarkdown,
     pkgdown,
-    clustSIGNAL,
+    SydneyBioX/clustSIGNAL,
     distances,
     cluster,
     aricode,
