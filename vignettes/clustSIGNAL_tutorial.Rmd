@@ -8,19 +8,42 @@ vignette: >
   %\VignetteIndexEntry{clustSIGNAL tutorial}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+editor_options: 
+  markdown: 
+    wrap: 80
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = FALSE,
+  comment = "#>",
+  cache = FALSE,
+  message = FALSE,
   warning = FALSE
-  )
+)
 ```
 
-## Section
+```{=html}
+<style>
+.question {
+  padding: 1em;
+  background: lightcyan;
+  color: black;
+  border-radius: 10px;
+}
+</style>
+```
 
+**Presentor**
 
-# Overview
+Pratibha Panwar$^{1,2,3}$
+
+$^1$ School of Mathematics and Statistics, University of Sydney, Australia\
+$^2$ Sydney Precision Data Science Centre, University of Sydney, Australia\
+$^3$ Charles Perkins Centre, University of Sydney, Australia
+
+<br/> Contact: pratibha.panwar\@sydney.edu.au
+
+## Overview
 
 In this vignette, we will demonstrate how to perform spatially-resolved clustering with clustSIGNAL. Following this, we will explore the clusters using pre-defined metrics like adjusted rand index (ARI), normalised mutual information (NMI), and average silhouette width, as well as spatial plots. We will also display the use of entropy measures generated as a by-product of clustSIGNAL process in understanding the tissue structure of a sample. In the end, we will also explore multisample analysis with clustSIGNAL.
 
