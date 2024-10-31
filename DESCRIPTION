@@ -29,6 +29,7 @@ Depends: Biobase,
 Suggests: knitr,
   rmarkdown,
   pkgdown
+Remotes: SydneyBioX/clustSIGNAL
 URL: https://sydneybiox.github.io/clustSIGNAL_workshop/
 BugReports: https://github.com/SydneyBioX/clustSIGNAL_workshop/issues
 VignetteBuilder: knitr
