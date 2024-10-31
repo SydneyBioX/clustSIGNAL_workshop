@@ -41,24 +41,10 @@ $^3$ Charles Perkins Centre, University of Sydney, Australia
 
 Contact: pratibha.panwar\@sydney.edu.au
 
-## Overview
 
-In this workshop, we will cover the following tasks:
-
-1.  Concept behind clustSIGNAL
-
-2.  Method parameters
-
-3.  How to run clustSIGNAL
-
-4.  Assessing biological relevance of clusters
-
-5.  Exploring other clustSIGNAL outputs
-
-
+In this RStudio instance, we will cover the remaining tasks:
 
 ## 3.  How to run clustSIGNAL
-
 
 ```{r load_packages, message = FALSE, warning = FALSE}
 # load required packages
