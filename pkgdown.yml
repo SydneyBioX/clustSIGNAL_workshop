@@ -2,9 +2,8 @@ pandoc: '3.4'
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  HOWTO_BUILD_WORKSHOP: HOWTO_BUILD_WORKSHOP.html
-  workshop_example: workshop_example.html
-last_built: 2024-10-29T00:59Z
+  clustSIGNAL_tutorial: clustSIGNAL_tutorial.html
+last_built: 2024-10-31T01:54Z
 urls:
-  reference: https://seandavi.github.io/BuildABiocWorkshop/reference
-  article: https://seandavi.github.io/BuildABiocWorkshop/articles
+  reference: https://sydneybiox.github.io/clustSIGNAL_workshop/reference
+  article: https://sydneybiox.github.io/clustSIGNAL_workshop/articles

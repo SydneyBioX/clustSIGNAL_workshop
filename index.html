@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BuildABiocWorkshop • BuildABiocWorkshop</title>
+<title>Spatial transcriptomics data analysis – spatially-aware clustering with clustSIGNAL • clustSIGNALworkshop</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="BuildABiocWorkshop">
-<meta property="og:description" content="This package serves as a template for using github actions to prepare a Bioconductor Workshop package for use. In particular, a pkgdown website and docker image are generated based on workflow settings.">
+<script src="pkgdown.js"></script><meta property="og:title" content="Spatial transcriptomics data analysis – spatially-aware clustering with clustSIGNAL">
+<meta property="og:description" content="This workshop serves as a tutorial for using clustSIGNAL (clustering of Spatially Informed Gene expression with Neighbourhood Adapted Learning) - a method for adaptively smoothing and clustering gene expression data obtained from molecule-resolved spatial transcriptomics technologies.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -32,8 +32,8 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">BuildABiocWorkshop</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <a class="navbar-link" href="index.html">clustSIGNALworkshop</a>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -50,17 +50,14 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/HOWTO_BUILD_WORKSHOP.html">How To Build A Workshop Package</a>
-    </li>
-    <li>
-      <a href="articles/workshop_example.html">An Example Workshop</a>
+      <a href="articles/clustSIGNAL_tutorial.html">clustSIGNAL tutorial</a>
     </li>
   </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/seandavi/BuildABiocWorkshop" class="external-link">
+  <a href="https://github.com/SydneyBioX/clustSIGNAL_workshop" class="external-link">
     <span class="fa fa-github"></span>
 
   </a>
@@ -77,69 +74,80 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div class="section level1">
-<div class="page-header"><h1 id="buildabiocworkshop">BuildABiocWorkshop<a class="anchor" aria-label="anchor" href="#buildabiocworkshop"></a>
-</h1></div>
-<p>This package is a template for building a Bioconductor workshop. The package includes Github actions to:</p>
+
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>clustSIGNAL is an R package that performs spatially-resolved clustering on spatial transcriptomics data. It uses an entropy-guided approach to measure the “domainness” of cell neighbourhoods - homogeneous neighbourhoods have low entropy and heterogeneous neighbourhoods have high entropy. The entropy values are used to generate cell neighbourhood-specific weights to perform an adaptive smoothing of gene expression - smoothing is performed over more cells in homogeneous neighbourhoods, but heterogeneous neighbourhoods are smoothed over a much smaller region. This approach aims to overcome data sparsity in spatial transcriptomics gene expression, while incorporating spatial context in the form of cell arrangement information of each cell’s neighbourhood.</p>
+</div>
+<div class="section level2">
+<h2 id="pre-requisites-to-run-the-workshop">Pre-requisites to run the workshop<a class="anchor" aria-label="anchor" href="#pre-requisites-to-run-the-workshop"></a>
+</h2>
+<p>The attendees are expected to have:</p>
 <ol style="list-style-type: decimal">
-<li>Set up bioconductor/bioconductor_docker:devel on Github resources</li>
-<li>Install package dependencies for your package (based on the <code>DESCRIPTION</code> file)</li>
-<li>Run <code><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck::rcmdcheck</a></code>
-</li>
-<li>Build a pkgdown website and push it to github pages</li>
-<li>Build a docker image with the installed package and dependencies and deploy to <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#pulling-container-images" class="external-link">the Github Container Repository</a> at the name <code>ghcr.io/gihub_user/repo_name</code>, all lowercase.</li>
+<li>Experience with R programming, and</li>
+<li>Familiarity with SingleCellExperiment and/or SpatialExperiment objects.</li>
 </ol>
-<div class="section level2">
-<h2 id="responsibilities">Responsibilities<a class="anchor" aria-label="anchor" href="#responsibilities"></a>
-</h2>
-<p>Package authors are primarily responsible for:</p>
-<ol style="list-style-type: decimal">
-<li>Creating a landing site of their choosing for their workshops (a website). This website should be listed in the <code>DESCRIPTION</code> file as the <code>URL</code>.</li>
-<li>Creating a docker image that will contain workshop materials and the installed packages necessary to run those materials. The name of the resulting docker image, including “tag” if desired, should be listed in a non-standard tag, <code>DockerImage:</code> in the <code>DESCRIPTION</code> file.</li>
-</ol>
-<p>Both of those tasks can be accomplished using the Github actions included in this template package. The vignette accompanying this package describes how to accomplish both of these tasks.</p>
 </div>
 <div class="section level2">
-<h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
+<h2 id="content-and-objective">Content and objective<a class="anchor" aria-label="anchor" href="#content-and-objective"></a>
 </h2>
-<p>For detailed instructions, see the <code>How to build a workshop</code> article/vignette.</p>
+<p>Below is a list of tasks we will go through during the workshop, and what the attendees can expect to learn from them.</p>
+<table class="table">
+<colgroup>
+<col width="65%">
+<col width="13%">
+<col width="21%">
+</colgroup>
+<thead><tr>
+<th>Task</th>
+<th>Time</th>
+<th>Objective</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Concept behind clustSIGNAL</td>
+<td>15 min</td>
+<td>Description of how clustSIGNAL works as a spatial clustering method. How does clustSIGNAL embed spatial information into the data and how that affects clustering.</td>
+</tr>
+<tr>
+<td>Method parameters</td>
+<td>5 min</td>
+<td>Learn about the different clustering parameters available in clustSIGNAL, and understand how they can affect the clustering output.</td>
+</tr>
+<tr>
+<td>How to run clustSIGNAL</td>
+<td>10 min</td>
+<td>Perform clustering on spatial transcriptomics data with clustSIGNAL. Also, learn what sort of outputs can be obtained from running the method.</td>
+</tr>
+<tr>
+<td>Assessing relevance of clusters</td>
+<td>10 min</td>
+<td>Investigate the biological relevance of the clusters obtained from running clustSIGNAL.</td>
+</tr>
+<tr>
+<td>Exploring clustSIGNAL outputs</td>
+<td>10 min</td>
+<td>Learn about how some of the data generated by clustSIGNAL can be useful for other analyses.</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
-<h2 id="results-of-successful-deployment">Results of successful deployment<a class="anchor" aria-label="anchor" href="#results-of-successful-deployment"></a>
+<h2 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
 </h2>
-<ul>
-<li>A working docker image that contains the installed package and dependencies.</li>
-<li>An up-to-date <code>pkgdown</code> website at <a href="https://YOURUSERNAME.github.io/YOURREPOSITORYNAME/" class="external-link uri">https://YOURUSERNAME.github.io/YOURREPOSITORYNAME/</a>
-</li>
-<li>Docker image will be tagged with <code>latest</code>, <code>sha-XXXXXX</code> where <code>XXXXXX</code> is the hash of the current <code>master</code> commit, and <code>master</code>.</li>
-</ul>
+<p>The clustSIGNAL R package is available to download and install from <a href="https://github.com/SydneyBioX/clustSIGNAL" class="external-link">github/SydneyBioX/clustSIGNAL</a>.</p>
+<p>The attendees can bring their own data, and run the method locally.</p>
 </div>
-<div class="section level2">
-<h2 id="to-use-the-resulting-image">To use the resulting image:<a class="anchor" aria-label="anchor" href="#to-use-the-resulting-image"></a>
-</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-e</span> PASSWORD=<span class="op">&lt;</span>choose_a_password_for_rstudio<span class="op">&gt;</span> -p 8787:8787 YOURDOCKERIMAGENAME</span></code></pre></div>
-<p>Once running, navigate to <a href="http://localhost:8787/" class="external-link uri">http://localhost:8787/</a> and then login with <code>rstudio</code>:<code>yourchosenpassword</code>.</p>
-<p>To try with <strong>this</strong> repository docker image:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-e</span> PASSWORD=abc <span class="at">-p</span> 8787:8787 ghcr.io/bioconductor/buildabiocworkshop</span></code></pre></div>
-<p><em>NOTE</em>: Running docker that uses the password in plain text like above exposes the password to others in a multi-user system (like a shared workstation or compute node). In practice, consider using an environment variable instead of plain text to pass along passwords and other secrets in docker command lines.</p>
-</div>
-<div class="section level2">
-<h2 id="whatcha-get">Whatcha get<a class="anchor" aria-label="anchor" href="#whatcha-get"></a>
-</h2>
-<ul>
-<li><a href="https://bioconductor.github.io/BuildABiocWorkshop" class="external-link uri">https://bioconductor.github.io/BuildABiocWorkshop</a></li>
-<li>A Docker image that you can run locally, in the cloud, or (usually) even as a singularity container on HPC systems.</li>
-</ul>
-</div>
-</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/seandavi/BuildABiocWorkshop/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/seandavi/BuildABiocWorkshop/issues/new/choose" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/SydneyBioX/clustSIGNAL_workshop/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/SydneyBioX/clustSIGNAL_workshop/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -155,14 +163,15 @@
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing BuildABiocWorkshop</a></li>
+<li><a href="authors.html#citation">Citing clustSIGNALworkshop</a></li>
 </ul>
 </div>
 
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Sean Davis <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-8991-6458" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Pratibha Panwar <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-7437-7084" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Shila Ghazanfar <br><small class="roles"> Author, contributor </small> <a href="https://orcid.org/0000-0001-7861-6997" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
@@ -174,7 +183,7 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Sean Davis.</p>
+<p>Developed by Pratibha Panwar, Shila Ghazanfar.</p>
 </div>
 
 <div class="pkgdown">
