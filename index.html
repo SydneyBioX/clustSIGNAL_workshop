@@ -78,15 +78,23 @@
 <div class="section level2">
 <h2 id="workshop-overview">Workshop overview<a class="anchor" aria-label="anchor" href="#workshop-overview"></a>
 </h2>
+<p>In this workshop, we will learn how clustSIGNAL, a spatial cell-type clustering method, works and how to run it on R. There will also be discussion on the various parameters available to us to run the method, how we can assess the relevance of the clusters, and the additional information generated as a by-product that could be used for other analyses.</p>
+<p>The clustSIGNAL R package is available to download and install from <a href="https://github.com/SydneyBioX/clustSIGNAL" class="external-link">github/SydneyBioX/clustSIGNAL</a>.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"SydneyBioX/clustSIGNAL"</span><span class="op">)</span></span></code></pre></div>
+<p>If you bring your own data, you can run the method locally. See below a list of R packages that clustSIGNAL depends on: <br> SpatialExperiment, BiocNeighbors, BiocParallel, bluster, scater, harmony, rlist</p>
+<p><br></p>
 </div>
 <div class="section level2">
-<h2 id="pre-requisites-to-run-the-workshop">Pre-requisites to run the workshop<a class="anchor" aria-label="anchor" href="#pre-requisites-to-run-the-workshop"></a>
+<h2 id="pre-requisites">Pre-requisites<a class="anchor" aria-label="anchor" href="#pre-requisites"></a>
 </h2>
 <p>The attendees are expected to have:</p>
 <ol style="list-style-type: decimal">
-<li>Experience with R programming, and</li>
+<li>Experience in R programming, and</li>
 <li>Familiarity with SingleCellExperiment and/or SpatialExperiment objects.</li>
 </ol>
+<p><br></p>
 </div>
 <div class="section level2">
 <h2 id="content-and-objective">Content and objective<a class="anchor" aria-label="anchor" href="#content-and-objective"></a>
@@ -146,29 +154,26 @@
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section level2">
-<h2 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
-</h2>
-<p>The clustSIGNAL R package is available to download and install from <a href="https://github.com/SydneyBioX/clustSIGNAL" class="external-link">github/SydneyBioX/clustSIGNAL</a>.</p>
-<p>The attendees can bring their own data, and run the method locally.</p>
+<p><br></p>
 </div>
 <div class="section level2">
 <h2 id="id_1-concept-behind-clustsignal">1. Concept behind clustSIGNAL<a class="anchor" aria-label="anchor" href="#id_1-concept-behind-clustsignal"></a>
 </h2>
-<p><img src="inst/images/clustSIGNAL_hex.jpg" align="right" height="250" width="225"></p>
 <p>clustSIGNAL (<strong><em>clust</em></strong>ering of <strong><em>S</em></strong>patially <strong><em>I</em></strong>nformed <strong><em>G</em></strong>ene expression with <strong><em>N</em></strong>eighbourhood <strong><em>A</em></strong>dapted <strong><em>L</em></strong>earning) is a cell-type clustering method for subcellular spatial transcriptomics data. It aims to address data sparsity by performing an adaptive smoothing approach to generate modified gene expressions that are embedded with spatial context and neighbourhood composition information.</p>
 <p>To capture neighbourhood composition of each cell, we used entropy as a measure of the “domainness” of cell neighbourhoods - the more homogeneous a neighbourhood the lower its entropy and the more heterogeneous a neighbourhood the higher its entropy. The entropy values were then used to generate cell neighbourhood-specific weights to perform an adaptive smoothing of gene expression, such that smoothing was performed over more cells in homogeneous neighbourhoods, but heterogeneous neighbourhoods were smoothed over a much smaller region.</p>
+<p><br></p>
 <p><img src="inst/images/Fig1_schematic.jpg" align="middle"></p>
+<p><br></p>
 <p><strong>Figure: clustSIGNAL method overview.</strong></p>
 <p>The core steps involved in the method are sequential:</p>
-<p><strong>1.</strong> The method starts with non-spatial clustering and subclustering (default louvain clustering) to classify cells into subclusters that we refer to as “intial clusters”. <em>Function: clustSIGNAL::p1_clustering()</em></p>
-<p><strong>2.</strong> The neighbourhood of each cell is defined in terms of their “intial clusters” composition. <em>Function: clustSIGNAL::neighbourDetect()</em></p>
-<p><strong>3.</strong> The cells in the neighbourhood are also sorted and rearranged so that the neighbours belonging to the same “intial clusters” group as the index cell are placed closer to it. <em>Function: clustSIGNAL::neighbourDetect()</em></p>
-<p><strong>4.</strong> Neighbourhood “domainness” is measured as entropy, where high entropy values indicate more heterogeneous neighbourhoods and low entropy values indicate more homogeneous neighbourhoods. <em>Function: clustSIGNAL::entropyMeasure()</em></p>
-<p><strong>5.</strong> The entropy values are used to generate weight distributions specific to each neighbourhood. <em>Function: clustSIGNAL::adaptiveSmoothing()</em></p>
-<p><strong>6.</strong> The gene expressions of cells are adaptively smoothed using the entropy-guided weight distributions; cells in heterogeneous neighbourhoods (high entropy) undergo smoothing over a smaller region, whereas cells in homogeneous neighbourhoods (low entropy) undergo smoothing over a larger region. <em>Function: clustSIGNAL::adaptiveSmoothing()</em></p>
-<p><strong>7.</strong> Non-spatial clustering is performed with adaptively smoothed gene expression to generate clustSIGNAL clusters that represent cell types. <em>Function: clustSIGNAL::p2_clustering()</em></p>
+<p><strong>1.</strong> The method starts with non-spatial clustering and subclustering (default louvain clustering) to classify cells into subclusters that we refer to as “intial clusters”. <br><em><strong>Function:</strong> clustSIGNAL::p1_clustering()</em></p>
+<p><strong>2.</strong> The neighbourhood of each cell is defined in terms of their “intial clusters” composition. <br><em><strong>Function:</strong> clustSIGNAL::neighbourDetect()</em></p>
+<p><strong>3.</strong> The cells in the neighbourhood are also sorted and rearranged so that the neighbours belonging to the same “intial clusters” group as the index cell are placed closer to it. <br><em><strong>Function:</strong> clustSIGNAL::neighbourDetect()</em></p>
+<p><strong>4.</strong> Neighbourhood “domainness” is measured as entropy, where high entropy values indicate more heterogeneous neighbourhoods and low entropy values indicate more homogeneous neighbourhoods. <br><em><strong>Function:</strong> clustSIGNAL::entropyMeasure()</em></p>
+<p><strong>5.</strong> The entropy values are used to generate weight distributions specific to each neighbourhood. <br><em><strong>Function:</strong> clustSIGNAL::adaptiveSmoothing()</em></p>
+<p><strong>6.</strong> The gene expressions of cells are adaptively smoothed using the entropy-guided weight distributions; cells in heterogeneous neighbourhoods (high entropy) undergo smoothing over a smaller region, whereas cells in homogeneous neighbourhoods (low entropy) undergo smoothing over a larger region. <br><em><strong>Function:</strong> clustSIGNAL::adaptiveSmoothing()</em></p>
+<p><strong>7.</strong> Non-spatial clustering is performed with adaptively smoothed gene expression to generate clustSIGNAL clusters that represent cell types. <br><em><strong>Function:</strong> clustSIGNAL::p2_clustering()</em></p>
+<p><br></p>
 </div>
 <div class="section level2">
 <h2 id="id_2-method-parameters">2. Method parameters<a class="anchor" aria-label="anchor" href="#id_2-method-parameters"></a>
@@ -189,14 +194,6 @@
 <li><p><strong>outputs</strong> - choice of output types. Default value is ‘c’ for data frame of cell IDs and cluster numbers. Other possible value is “a” for a list of dataframe of clusters plus final SpatialExperiment object.</p></li>
 <li><p><strong>clustParams</strong> - parameter options for TwoStepParam clustering methods in the bluster package. The clustering parameters are in the order - centers (centers) for clustering with KmeansParam, centers (centers) for sub-clustering clusters with KmeansParam, maximum iterations (iter.max) for clustering with KmeansParam, k values (k) for clustering with NNGraphParam, and community detection method (cluster.fun) to use with NNGraphParam.</p></li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
-<p>To install clustSIGNAL from <a href="https://github.com/SydneyBioX/clustSIGNAL" class="external-link">GitHub</a>:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"SydneyBioX/clustSIGNAL"</span><span class="op">)</span></span></code></pre></div>
 </div>
 
   </div>
