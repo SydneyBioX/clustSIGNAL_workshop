@@ -105,18 +105,7 @@ Sydney Precision Data Science Centre, University of Sydney,
 Australia<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mn>3</mn></msup><annotation encoding="application/x-tex">^3</annotation></semantics></math>
 Charles Perkins Centre, University of Sydney, Australia</p>
 <p>Contact: pratibha.panwar@sydney.edu.au</p>
-<div class="section level3">
-<h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h3>
-<p>In this workshop, we will cover the following tasks:</p>
-<ol style="list-style-type: decimal">
-<li><p>Concept behind clustSIGNAL</p></li>
-<li><p>Method parameters</p></li>
-<li><p>How to run clustSIGNAL</p></li>
-<li><p>Assessing biological relevance of clusters</p></li>
-<li><p>Exploring other clustSIGNAL outputs</p></li>
-</ol>
-</div>
+<p>In this RStudio instance, we will cover the remaining tasks:</p>
 <div class="section level3">
 <h3 id="how-to-run-clustsignal">3. How to run clustSIGNAL<a class="anchor" aria-label="anchor" href="#how-to-run-clustsignal"></a>
 </h3>
@@ -197,16 +186,16 @@ SpatialExperiment object.</p>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="st">"sample_id"</span></span>
 <span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="st">"uniqueID"</span></span>
 <span><span class="va">res_emb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/clustSIGNAL/reference/clustSIGNAL.html" class="external-link">clustSIGNAL</a></span><span class="op">(</span><span class="va">spe</span>, <span class="va">samples</span>, <span class="va">cells</span>, outputs <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "Calculating PCA. Time 01:54:49"</span></span>
-<span><span class="co">#&gt; [1] "clustSIGNAL run started. Time 01:54:49"</span></span>
-<span><span class="co">#&gt; [1] "Initial nonspatial clustering performed. Clusters = 11 Time 01:54:50"</span></span>
-<span><span class="co">#&gt; [1] "Nonspatial subclustering performed. Subclusters = 50 Time 01:54:52"</span></span>
-<span><span class="co">#&gt; [1] "Regions defined. Time 01:54:54"</span></span>
-<span><span class="co">#&gt; [1] "Region domainness calculated. Time 01:54:55"</span></span>
-<span><span class="co">#&gt; [1] "Smoothing performed. NN = 30 Kernel = G Spread = 0.05 Time 01:55:27"</span></span>
-<span><span class="co">#&gt; [1] "Nonspatial clustering performed on smoothed data. Clusters = 16 Time 01:55:28"</span></span>
-<span><span class="co">#&gt; [1] "clustSIGNAL run completed. 01:55:28"</span></span>
-<span><span class="co">#&gt; Time difference of 39.8257 secs</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "Calculating PCA. Time 05:46:21"</span></span>
+<span><span class="co">#&gt; [1] "clustSIGNAL run started. Time 05:46:21"</span></span>
+<span><span class="co">#&gt; [1] "Initial nonspatial clustering performed. Clusters = 11 Time 05:46:23"</span></span>
+<span><span class="co">#&gt; [1] "Nonspatial subclustering performed. Subclusters = 50 Time 05:46:24"</span></span>
+<span><span class="co">#&gt; [1] "Regions defined. Time 05:46:26"</span></span>
+<span><span class="co">#&gt; [1] "Region domainness calculated. Time 05:46:27"</span></span>
+<span><span class="co">#&gt; [1] "Smoothing performed. NN = 30 Kernel = G Spread = 0.05 Time 05:47:00"</span></span>
+<span><span class="co">#&gt; [1] "Nonspatial clustering performed on smoothed data. Clusters = 16 Time 05:47:02"</span></span>
+<span><span class="co">#&gt; [1] "clustSIGNAL run completed. 05:47:02"</span></span>
+<span><span class="co">#&gt; Time difference of 40.53846 secs</span></span></code></pre>
 <p>This returns a list that can contain a dataframe of cluster names, a
 matrix of cell labels from each region’s neighbourhood, a final
 SpatialExperiment object, or a combination of these, depending on the
@@ -409,15 +398,15 @@ structure.</p>
 <span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu">clustSIGNAL</span><span class="fu">::</span><span class="fu"><a href="https://sydneybiox.github.io/clustSIGNAL/reference/p1_clustering.html" class="external-link">p1_clustering</a></span><span class="op">(</span><span class="va">spe</span>, dimRed <span class="op">=</span> <span class="st">"PCA"</span>, batch <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                                  batch_by <span class="op">=</span> <span class="st">"None"</span>, clustParams <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>                                    <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">30</span>, <span class="fl">5</span>, <span class="st">"louvain"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "Initial nonspatial clustering performed. Clusters = 11 Time 01:55:38"</span></span>
-<span><span class="co">#&gt; [1] "Nonspatial subclustering performed. Subclusters = 50 Time 01:55:40"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "Initial nonspatial clustering performed. Clusters = 11 Time 05:47:11"</span></span>
+<span><span class="co">#&gt; [1] "Nonspatial subclustering performed. Subclusters = 50 Time 05:47:13"</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outReg</span> <span class="op">&lt;-</span> <span class="fu">clustSIGNAL</span><span class="fu">::</span><span class="fu"><a href="https://sydneybiox.github.io/clustSIGNAL/reference/neighbourDetect.html" class="external-link">neighbourDetect</a></span><span class="op">(</span><span class="va">spe</span>, samples <span class="op">=</span> <span class="st">"sample_id"</span>, NN <span class="op">=</span> <span class="fl">30</span>, </span>
 <span>                                       cells <span class="op">=</span> <span class="st">"uniqueID"</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "Regions defined. Time 01:55:42"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "Regions defined. Time 05:47:15"</span></span></code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/clustSIGNAL/reference/entropyMeasure.html" class="external-link">entropyMeasure</a></span><span class="op">(</span><span class="va">spe</span>, cells <span class="op">=</span> <span class="st">"uniqueID"</span>, <span class="va">outReg</span><span class="op">$</span><span class="va">regXclust</span>, threads <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "Region domainness calculated. Time 01:55:42"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "Region domainness calculated. Time 05:47:15"</span></span></code></pre>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spe</span><span class="op">$</span><span class="va">entropy</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [1] 1.03701 0.42003 0.62749 0.76651 0.56651 0.21084</span></span></code></pre>
@@ -479,16 +468,16 @@ internally for batch correction.</p>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="st">"samples"</span></span>
 <span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="st">"Cell_ID"</span></span>
 <span><span class="va">res_hyp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/clustSIGNAL/reference/clustSIGNAL.html" class="external-link">clustSIGNAL</a></span><span class="op">(</span><span class="va">spe2</span>, <span class="va">samples</span>, <span class="va">cells</span>, threads <span class="op">=</span> <span class="fl">4</span>, outputs <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "Calculating PCA. Time 01:55:42"</span></span>
-<span><span class="co">#&gt; [1] "clustSIGNAL run started. Time 01:55:43"</span></span>
-<span><span class="co">#&gt; [1] "Initial nonspatial clustering performed. Clusters = 11 Time 01:55:44"</span></span></code></pre>
-<pre><code><span><span class="co">#&gt; [1] "Nonspatial subclustering performed. Subclusters = 52 Time 01:55:45"</span></span>
-<span><span class="co">#&gt; [1] "Regions defined. Time 01:55:48"</span></span>
-<span><span class="co">#&gt; [1] "Region domainness calculated. Time 01:55:50"</span></span>
-<span><span class="co">#&gt; [1] "Smoothing performed. NN = 30 Kernel = G Spread = 0.05 Time 01:56:09"</span></span>
-<span><span class="co">#&gt; [1] "Nonspatial clustering performed on smoothed data. Clusters = 11 Time 01:56:10"</span></span>
-<span><span class="co">#&gt; [1] "clustSIGNAL run completed. 01:56:10"</span></span>
-<span><span class="co">#&gt; Time difference of 27.98343 secs</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "Calculating PCA. Time 05:47:15"</span></span>
+<span><span class="co">#&gt; [1] "clustSIGNAL run started. Time 05:47:16"</span></span>
+<span><span class="co">#&gt; [1] "Initial nonspatial clustering performed. Clusters = 11 Time 05:47:17"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "Nonspatial subclustering performed. Subclusters = 52 Time 05:47:18"</span></span>
+<span><span class="co">#&gt; [1] "Regions defined. Time 05:47:21"</span></span>
+<span><span class="co">#&gt; [1] "Region domainness calculated. Time 05:47:23"</span></span>
+<span><span class="co">#&gt; [1] "Smoothing performed. NN = 30 Kernel = G Spread = 0.05 Time 05:47:42"</span></span>
+<span><span class="co">#&gt; [1] "Nonspatial clustering performed on smoothed data. Clusters = 11 Time 05:47:43"</span></span>
+<span><span class="co">#&gt; [1] "clustSIGNAL run completed. 05:47:43"</span></span>
+<span><span class="co">#&gt; Time difference of 27.75687 secs</span></span></code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spe2</span> <span class="op">&lt;-</span> <span class="va">res_hyp</span><span class="op">$</span><span class="va">spe_final</span></span>
 <span><span class="va">spe2</span></span></code></pre></div>
