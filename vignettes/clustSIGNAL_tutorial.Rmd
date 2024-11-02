@@ -69,9 +69,9 @@ library(ggplot2)
 library(patchwork)
 ```
 
-## 3. How to run clustSIGNAL
+# 3. How to run clustSIGNAL
 
-### Example datasets
+## Example datasets
 
 For this tutorial, we will use sampled data from two publicly available
 datasets - (i) a subsample from the SeqFISH mouse embryo dataset from [Lohoff et
@@ -89,7 +89,7 @@ for 181 samples, with 155 genes and a total of 1,027,080 cells. Here, we use a
 subset data of 6000 cells randomly selected from only 3 samples - Animal 1
 Bregma -0.09 (2080 cells), Animal 7 Bregma 0.16 (1936 cells), and Animal 7
 Bregma -0.09 (1984 cells), excluding cells that had been annotated as
-'ambiguous' and 20 genes that were assessed using a different technology.
+'Ambiguous' and 20 genes that were assessed using a different technology.
 
 These sampled datasets are available with clustSIGNAL package and can be
 accessed as below:
@@ -106,9 +106,9 @@ data(mHypothal)
 # logcounts and cell metadata, respectively, to your environment
 ```
 
-### Creating SpatialExperiment objects
+## Creating SpatialExperiment objects
 
-clustSIGNAL requires a SpatialExperiment (spe) object as input, so first we need
+ClustSIGNAL requires a SpatialExperiment (spe) object as input, so first we need
 to create a spe object from the gene expression and cell metadata we have in our
 environment.
 
@@ -118,7 +118,7 @@ dataframe of cell characteristics, including the x-y coordinates of each cell.
 Let us work with the MERFISH data first, by creating a spe object from the data.
 
 ```{r hypothal_data_prep}
-# to create spe object we need gene expression, cell metadata, and cell location
+# to create spe object we need gene expression, cell metadata, and cell locations
 spe_mh <- SpatialExperiment(assays = list(logcounts = mh_expr),
                             colData = mh_data, 
                             # spatialCoordsNames requires column names in 
@@ -132,9 +132,9 @@ gene expression data are stored here - multiple assays can be stored in one spe
 object), colData (the cell characteristics are stored here), rowData (the gene
 characteristics can be stored here), spatialCoords (the x-y coordinates of each
 cell are stored here), reducedDims (any low embeddings data can be stored here),
-and imgData (any images from the data can be stored here).
+and imgData (any images from the dataset can be stored here).
 
-### Running clustSIGNAL
+## Running clustSIGNAL
 
 ClustSIGNAL comes with many parameters that can be explored. Most of these
 parameters have default values and do not need to be specified when running the
@@ -195,7 +195,7 @@ res_mh |> names()
 
 The resulting spe object contains the adaptively smoothed gene expression data
 as an additional assay, initial clusters, entropy values, and clustSIGNAL
-clusters. Essentiallu, the final spe object contains data from the input spe
+clusters. Essentially, the final spe object contains data from the input spe
 object plus the outputs from the clustSIGNAL run.
 
 ```{r hypothal_speFinal}
@@ -203,10 +203,10 @@ res_mh$spe_final
 spe_mh <- res_mh$spe_final
 ```
 
-## 4. Assessing relevance of clusters
+# 4. Assessing relevance of clusters
 
 In this section, we will analyse the results from clustSIGNAL through clustering
-metrics and visualisation.
+metrics and visualisations.
 
 Clustering metrics such as ARI (adjusted rand index) and NMI (normalised mutual
 information) allow us to compare clustering performed by two methods. Here, we
@@ -222,10 +222,7 @@ spe_mh |> colData() %>%
   # group cells by samples and for cells in each sample 
   # calculate the following metrics
   summarise(ARI = aricode::ARI(Cell_class, clustSIGNAL), # calculate ARI
-            NMI = aricode::NMI(Cell_class, clustSIGNAL), # calculate NMI
-            min_Entropy = min(entropy), # calculate minimum entropy
-            max_Entropy = max(entropy), # calculate minimum entropy
-            mean_Entropy = mean(entropy)) # calculate minimum entropy
+            NMI = aricode::NMI(Cell_class, clustSIGNAL)) # calculate NMI
 ```
 
 The clustering output can also be visualised by plotting the spatial coordinates
@@ -240,19 +237,18 @@ object.
 reducedDim(spe_mh, "spatial") <- spatialCoords(spe_mh)
 ```
 
-To specify that we want to create spatial plots, we just specify the low
-embedding name in dimred option, in this case it is "spatial".
+To specify that we want to create spatial plots, we just mention the correct low
+embedding name in the dimred option, in this case it is "spatial".
 
 ```{r hypothal_spatialPlots}
-p1 <- scater::plotReducedDim(spe_mh, 
-                             # specify spatial low dimension
-                             dimred = "spatial", 
-                             colour_by = "clustSIGNAL", 
-                             point_alpha = 1, 
-                             point_size = 1) +
+scater::plotReducedDim(spe_mh, 
+                       # specify spatial low dimension
+                       dimred = "spatial", 
+                       colour_by = "clustSIGNAL", 
+                       point_alpha = 1, 
+                       point_size = 1) +
   # to separate out the 3 samples in the dataset
-  facet_wrap(vars(spe_mh[[smp_label]]), scales = "free") 
-p1
+  facet_wrap(vars(spe_mh[[smp_label]]), scales = "free")
 ```
 
 Here, the x and y axes are the x-y coordinates of the cells. The dataset
@@ -269,8 +265,7 @@ table(spe_mh$Cell_class, spe_mh$clustSIGNAL)
 
 In this table, the rows show published manual annotations and columns show
 clustSIGNAL cluster labels. ClustSIGNAL is able to capture the distinct cell
-types and also identify subgroups in some cases - inhibitory and excitatory
-neurons.
+types and also identify subgroups in some cases, e.g., the inhibitory neurons.
 
 To assess how distinct these clusters are, we investigate the top marker genes
 in each cluster using the FindAllMarkers function in Seurat R package.
@@ -289,7 +284,7 @@ markers, we will use default values, which includes using the data layer
 containing logcounts.
 
 ```{r hypothal_clusterMarkers}
-# to specify that the cluster number information is in clustSIGNAL column
+# to specify that the cluster labels are in clustSIGNAL column
 Idents(seu_mh) <- "clustSIGNAL"
 # this will identify marker genes in each cluster using default values
 markers_mh <- Seurat::FindAllMarkers(seu_mh)
@@ -314,21 +309,23 @@ Seurat::DoHeatmap(seu_mh, slot = "data", features = top10$gene) + NoLegend()
 
 Here, the genes are shown along the y-axis and the cells, grouped by the cluster
 they belong to, are displayed along the x-axis. The values in the heatmap are
-logcounts of top 10 marker genes in each cluster.
+logcounts of top 10 marker genes in each cluster. The heatmap shows that the 
+clusters associated with inhibitory neurons have different gene expression 
+patterns, which accounts for their separation by clustSIGNAL.
 
-## 5. Exploring clustSIGNAL outputs
+# 5. Exploring clustSIGNAL outputs
 
 Other than the cluster labels, clustSIGNAL also generates smoothed gene
 expression, initial cluster labels, and cell neihbourhood-specific entropy
-values. Other outputs such as nearest neighbour matrix, and initial cluster
+values. Other outputs such as nearest neighbour matrix and initial cluster
 based neighbourhood compositions are also accessible by running clustSIGNAL
 functions sequentially.
 
-The *p1_clustering* function generates the initial cluster labels and adds them
-to the spe object, the *neighbourDetect* function produces nearest neighbour
-matrix and neighbourhood compositions, the *entropyMeasure* function adds
-entropy values to the spe object, the *adaptiveSmoothing* function adds smoothed
-gene expression to the spe object, and the *p2_clustering* function generates
+The *p1_clustering()* function generates the initial cluster labels and adds them
+to the spe object, the *neighbourDetect()* function produces nearest neighbour
+matrix and neighbourhood compositions, the *entropyMeasure()* function adds
+entropy values to the spe object, the *adaptiveSmoothing()* function adds smoothed
+gene expression to the spe object, and the *p2_clustering()* function generates
 the final clusters and adds them to the spe object.
 
 Of these additional outputs, the entropy values can be valuable in exploring
@@ -356,7 +353,7 @@ spe_me
 ```
 
 To explore the dataset, we can estimate the spread and distribution of the
-entropy values using histogram and spatial plots respectively.
+entropy values using histogram and spatial plots, respectively.
 
 ```{r compare_hist}
 # histogram plots to show entropy spread
@@ -394,7 +391,8 @@ s2 <- scater::plotReducedDim(spe_mh, # plotting hypothalamus data
   # to separate out the 3 samples in the dataset
   facet_wrap(vars(spe_mh[[smp_label]]), scales = "free") 
 
-(h1 + h2) / (s1 + s2) + patchwork::plot_layout(widths = c(1, 3))
+(h1 + h2 + patchwork::plot_layout(widths = c(1, 3))) /  
+  (s1 + s2 + patchwork::plot_layout(widths = c(1, 3)))
 ```
 
 The entropy plots help us gauge the "domainness" in the samples. For example,
