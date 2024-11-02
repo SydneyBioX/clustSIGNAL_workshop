@@ -18,14 +18,12 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends: Biobase,
   clustSIGNAL,
-  distances,
-  cluster,
+  Seurat,
+  scater,
   aricode,
   dplyr,
   ggplot2,
-  scater,
-  patchwork,
-  scattermore
+  patchwork
 Suggests: knitr,
   rmarkdown,
   pkgdown

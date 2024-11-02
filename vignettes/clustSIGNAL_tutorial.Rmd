@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 }
 </style>
 
-**Presentor**
+**Presenter**
 
 Pratibha Panwar$^{1,2,3}$
 
@@ -41,460 +41,398 @@ $^3$ Charles Perkins Centre, University of Sydney, Australia
 
 Contact: pratibha.panwar\@sydney.edu.au
 
+In this RStudio instance, we will cover the remaining tasks.
 
-In this RStudio instance, we will cover the remaining tasks:
+### Setup Installation
 
-## 3.  How to run clustSIGNAL
+```{r}
+# you do not need to run this chunk
+# the packages are already installed in this instance
+
+# install from CRAN
+# install.packages(c("Seurat", "aricode", "dplyr", "ggplot2", "patchwork"))
+
+# install from github
+# install.packages("devtools")
+# devtools::install_github("SydneyBioX/clustSIGNAL")
+```
+
+### Loading packages
 
 ```{r load_packages, message = FALSE, warning = FALSE}
 # load required packages
 library(clustSIGNAL)
-library(distances)
-library(cluster)
+library(Seurat)
 library(aricode)
 library(dplyr)
 library(ggplot2)
 library(patchwork)
-library(scattermore)
 ```
 
-# Single sample analysis with clustSIGNAL
+## 3. How to run clustSIGNAL
 
-Here, we use the SeqFISH mouse embryo dataset from [Lohoff et al, 2021](https://www.nature.com/articles/s41587-021-01006-2)
-, which contains spatial transcriptomics data from 3 mouse embryos, with 351 
-genes and a total of 57,536 cells. For this vignette, we subset the data by 
-randomly selecting 5000 cells from Embryo 2, excluding cells that were manually 
+### Example datasets
+
+For this tutorial, we will use sampled data from two publicly available
+datasets - (i) a subsample from the SeqFISH mouse embryo dataset from [Lohoff et
+al, 2021](https://www.nature.com/articles/s41587-021-01006-2), and (ii) a
+subsample from the MERFISH mouse hypothalamus preoptic region dataset from
+[Moffitt et al, 2018](https://www.science.org/doi/10.1126/science.aau5324)
+
+The SeqFISH mouse embryo dataset contains gene expression data for 3 mouse
+embryos, with 351 genes and a total of 57,536 cells. Here, we use a subset data
+of 5000 randomly selected cells from Embryo 2, excluding cells that had been
 annotated as 'Low quality'.
 
-We begin by creating a SpatialExperiment object from the gene expression and 
-cell information in the data subset, ensuring that the spatial coordinates are 
-stored in spatialCoords within the SpatialExperiment object. If the data are 
-already in a SpatialExperiment object, then the user can directly run 
-clustSIGNAL, after ensuring that the basic requirements like spatial coordinates 
-and normalized counts are met.
+The MERFISH mouse hypothalamus preoptic region dataset contains gene expression
+for 181 samples, with 155 genes and a total of 1,027,080 cells. Here, we use a
+subset data of 6000 cells randomly selected from only 3 samples - Animal 1
+Bregma -0.09 (2080 cells), Animal 7 Bregma 0.16 (1936 cells), and Animal 7
+Bregma -0.09 (1984 cells), excluding cells that had been annotated as
+'ambiguous' and 20 genes that were assessed using a different technology.
 
-```{r embryo_data_prep}
-data(mEmbryo2)
-spe <- SpatialExperiment(assays = list(logcounts = me_expr),
-                        colData = me_data, spatialCoordsNames = c("X", "Y"))
-spe
+These sampled datasets are available with clustSIGNAL package and can be
+accessed as below:
+
+```{r embryo_data}
+data(mEmbryo2) 
+# this will load me_expr and me_data objects, containing gene expression 
+# logcounts and cell metadata, respectively, to your environment
 ```
 
-For running clustSIGNAL, we need to know the column names in colData of the 
-SpatialExperiment object that contain the sample and cell labels. Here, the 
-sample labels are in the 'sample_id' column, and the cell labels are in the 
-'uniqueID' column.
-
-```{r embryo_data_columns}
-colnames(colData(spe))
+```{r hypothal_data}
+data(mHypothal) 
+# this will load mh_expr and mh_data objects, containing gene expression 
+# logcounts and cell metadata, respectively, to your environment
 ```
 
-# Running clustSIGNAL on one sample
+### Creating SpatialExperiment objects
 
-Next, we run clustSIGNAL using the sample and cell labels we identified earlier. 
-The simplest clustSIGNAL run requires a SpatialExperiment object, two variables 
-holding colData column names containing sample and cell labels, and the type of 
-output the user would like to see. Other parameters that can be modified include 
-dimRed to specify the low dimension data to use, batch to perform batch 
-correction, batch_by to indicate sample batches contributing to batch effect, 
-NN to specify the neighbourhood size, kernel for weight distribution to use, 
-spread for distribution spread value, sort to sort the neighbourhood, threads 
-to specify the number of cpus to use in parallel runs, and clustParams to 
-specify clustering parameters.
+clustSIGNAL requires a SpatialExperiment (spe) object as input, so first we need
+to create a spe object from the gene expression and cell metadata we have in our
+environment.
 
-Furthermore, the adaptively smoothed gene expression data generated by 
-clustSIGNAL could be useful for other downstream analyses and will be 
-accessible to the user if they choose to output the final SpatialExperiment 
-object.
+The gene expression data is in a gene by cell matrix. The cell metadata is a
+dataframe of cell characteristics, including the x-y coordinates of each cell.
 
-```{r clustSIGNAL_singleRun}
-set.seed(100)
-samples <- "sample_id"
-cells <- "uniqueID"
-res_emb <- clustSIGNAL(spe, samples, cells, outputs = "a")
-```
-
-This returns a list that can contain a dataframe of cluster names, a matrix of 
-cell labels from each region's neighbourhood, a final SpatialExperiment object, 
-or a combination of these, depending on the choice of 'outputs' selected. Here,
-the output contains all three data types.
-
-```{r embryo_result_list}
-names(res_emb)
-```
-
-The cluster dataframe contains cell labels and their cluster numbers allotted 
-by clustSIGNAL.
-
-```{r embryo_clusters_head}
-head(res_emb$clusters, n = 3)
-```
-
-The final SpatialExperiment object contains the adaptively smoothed gene 
-expression data as an additional assay, as well initial clusters, entropy 
-values, and clustSIGNAL clusters.
-
-```{r embryo_final_spe}
-spe <- res_emb$spe_final
-spe
-```
-
-# Analysing clustSIGNAL results
-
-In this section, we analyse the results from clustSIGNAL through spatial plots 
-and clustering metrics.
-
-## Visualising clustSIGNAL clusters
-
-```{r colors}
-colors <- c("#635547", "#8EC792", "#9e6762", "#FACB12", "#3F84AA", "#0F4A9C", 
-           "#ff891c", "#EF5A9D", "#C594BF", "#DFCDE4", "#139992", "#65A83E", 
-           "#8DB5CE", "#005579", "#C9EBFB", "#B51D8D", "#532C8A", "#8870ad", 
-           "#cc7818", "#FBBE92", "#EF4E22", "#f9decf", "#c9a997", "#C72228", 
-           "#f79083", "#F397C0", "#DABE99", "#c19f70", "#354E23", "#C3C388",
-           "#647a4f", "#CDE088", "#f7f79e", "#F6BFCB", "#7F6874", "#989898", 
-           "#1A1A1A", "#FFFFFF", "#e6e6e6", "#77441B", "#F90026", "#A10037", 
-           "#DA5921", "#E1C239", "#9DD84A")
-```
-
-We use spatial coordinates of cells and their cluster labels and entropy values 
-to visualize the clustering output.
-
-```{r embryo_spatialPlots}
-df_ent <- as.data.frame(colData(spe))
-
-# spatial plot
-spt_clust <- df_ent %>%
-  ggplot(aes(x = spatialCoords(spe)[, 1],
-             y = -spatialCoords(spe)[, 2])) +
-  geom_scattermore(pointsize = 3, aes(colour = clustSIGNAL)) +
-  scale_color_manual(values = colors) +
-  ggtitle("A") +
-  labs(x = "x-coordinate", y = "y-coordinate") +
-  guides(color = guide_legend(title = "Clusters",
-                              override.aes = list(size = 3))) +
-  theme_classic() +
-  theme(text = element_text(size = 12))
-
-# calculating median entropy of each cluster
-celltype_ent <- df_ent %>%
-  group_by(as.character(clustSIGNAL)) %>%
-  summarise(meanEntropy = median(entropy))
-# reordering clusters by their median entropy
-# low to high median entropy
-cellOrder <- celltype_ent$meanEntropy
-names(cellOrder) <- celltype_ent$`as.character(clustSIGNAL)`
-cellOrder <- sort(cellOrder)
-df_ent$clustSIGNAL <- factor(df_ent$clustSIGNAL, levels = names(cellOrder))
-# box plot of cluster entropy
-colors_ent <- colors[as.numeric(names(cellOrder))]
-box_clust <- df_ent %>%
-  ggplot(aes(x = clustSIGNAL, y = entropy, fill = clustSIGNAL)) +
-  geom_boxplot() +
-  scale_fill_manual(values = colors_ent) +
-  ggtitle("B") +
-  labs(x = "clustSIGNAL clusters", y = "Entropy") +
-  theme_classic() +
-  theme(legend.position = "none",
-        text = element_text(size = 12),
-        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-
-spt_clust + box_clust + patchwork::plot_layout(guides = "collect", 
-                                               widths = c(2, 3))
-```
-
-The spatial location (A) and entropy distribution (B) of the clusters provide 
-spatial context of the cells and their neighbourhoods, as well as the 
-compositions of the neighbourhoods. For example, the low entropy of cluster 4 
-indicates that the cells in this cluster are generally found in more 
-homogeneous space, whereas the high entropy of cluster 7 cells indicates that 
-they belong to regions with more cell diversity. This can also be visualized in 
-the spatial plot.
-
-## Cluster metrics
-
-We assess the clustering efficiency of clustSIGNAL using the commonly used 
-clustering metrics ARI, NMI, and silhouette width. ARI and NMI are usable only 
-when prior cell annotation information is available, and assume that this cell 
-annotation is ground truth. Here, ARI and NMI measure the similarity or 
-agreement (respectively) between cluster labels obtained from clustSIGNAL and 
-manual cell annotation labels. On the contrary, silhouette width is 
-reference-free and evaluates how well a cell fits within its assigned cluster 
-compared to other clusters.
-
-```{r embryo_clusterMetrics}
-# average silhouette width
-clusts <- as.numeric(as.character(spe$clustSIGNAL))
-cXg_mat <- t(as.matrix(logcounts(spe)))
-distMat <- distances(cXg_mat)
-silCluster <- as.matrix(silhouette(clusts, distMat))
-spe$rcSil <- silCluster[, 3]
-
-# ARI and NMI
-as.data.frame(colData(spe)) %>%
-  summarise(ARI = aricode::ARI(celltype_mapped_refined, clustSIGNAL),
-            NMI = aricode::NMI(celltype_mapped_refined, clustSIGNAL),
-            ASW = mean(rcSil))
-```
-
-## Entropy spread and distribution
-
-The entropy values generated through clustSIGNAL process can be useful in 
-analyzing the sample structure. The entropy range can indicate whether the 
-tissue sample contains any homogeneous domain-like structures. For example, 
-here the minimum entropy value is 0, which means some cells are placed in 
-completely homogeneous space when looking at neighbourhood size of 30 cells 
-(NN = 30 was used for generating this entropy data). Moreover, the mean entropy 
-value is low, which can be interpreted as the tissue having at least some 
-domain-like structures.
-
-```{r embryo_entropyMetrics}
-# Data assessment - Overall entropy
-as.data.frame(colData(spe)) %>%
-  summarise(min_Entropy = min(entropy),
-            max_Entropy = max(entropy),
-            mean_Entropy = mean(entropy))
-```
-
-```{r embryo_entropyPlots}
-# Histogram of entropy spread
-hst_ent <- as.data.frame(colData(spe)) %>%
-  ggplot(aes(entropy)) +
-  geom_histogram(binwidth = 0.05) +
-  ggtitle("A") +
-  labs(x = "Entropy", y = "Number of regions") +
-  theme_classic() +
-  theme(text = element_text(size = 12))
-
-# Spatial plot showing sample entropy distribution
-spt_ent <- as.data.frame(colData(spe)) %>%
-  ggplot(aes(x = spatialCoords(spe)[, 1],
-             y = -spatialCoords(spe)[, 2])) +
-  geom_scattermore(pointsize = 3,
-             aes(colour = entropy)) +
-  scale_colour_gradient2("Entropy", low = "grey", high = "blue") +
-  scale_size_continuous(range = c(0, max(spe$entropy))) +
-  ggtitle("B") +
-  labs(x = "x-coordinate", y = "y-coordinate") +
-  theme_classic() +
-  theme(text = element_text(size = 12))
-
-hst_ent + spt_ent
-```
-
-The spread (A) and spatial distribution (B) of region entropy measures can be 
-very useful in assessing the tissue composition of samples - low entropy 
-regions are more homogeneous with domain-like structure, whereas high entropy 
-regions are heterogeneous with more uniform distribution of cells.
-
-# Generating entropy data only
-
-To evaluate tissue structure using entropy values, we can run clustSIGNAL up to
-the entropy measurement step, without running the complete method. The entropy 
-values will be added to the SpatialExperiment object and can be used for 
-assessing tissue structure.
-
-```{r clustSIGNAL_onlyEntropy}
-data(mEmbryo2)
-spe <- SpatialExperiment(assays = list(logcounts = me_expr),
-                         colData = me_data, spatialCoordsNames = c("X", "Y"))
-set.seed(100)
-spe <- scater::runPCA(spe)
-spe <- clustSIGNAL::p1_clustering(spe, dimRed = "PCA", batch = FALSE, 
-                                  batch_by = "None", clustParams = list(
-                                    0, 0, 30, 5, "louvain"))
-outReg <- clustSIGNAL::neighbourDetect(spe, samples = "sample_id", NN = 30, 
-                                       cells = "uniqueID", sort = TRUE)
-spe <- entropyMeasure(spe, cells = "uniqueID", outReg$regXclust, threads = 1)
-head(spe$entropy)
-```
-
-# Multisample analysis with clustSIGNAL
-
-Here, we use the MERFISH mouse hypothalamic preoptic region dataset from 
-[Moffitt et al, 2018](https://www.science.org/doi/10.1126/science.aau5324), 
-which contains spatial transcriptomics data from 181 samples, with 155 genes 
-and a total of 1,027,080 cells. For this vignette, we subset the data by 
-selecting a total of 6000 random cells from only 3 samples - Animal 1 Bregma 
--0.09 (2080 cells), Animal 7 Bregma 0.16 (1936 cells), and Animal 7 Bregma 
--0.09 (1984 cells), excluding cells that were manually annotated as 'ambiguous' 
-and 20 genes that were assessed using a different technology.
-
-We start the analysis by creating a SpatialExperiment object from the gene 
-expression and cell information in the data subset, ensuring that the spatial 
-coordinates are stored in spatialCoords within the SpatialExperiment object.
+Let us work with the MERFISH data first, by creating a spe object from the data.
 
 ```{r hypothal_data_prep}
-data(mHypothal)
-spe2 <- SpatialExperiment(assays = list(logcounts = mh_expr),
-                        colData = mh_data, spatialCoordsNames = c("X", "Y"))
-spe2
+# to create spe object we need gene expression, cell metadata, and cell location
+spe_mh <- SpatialExperiment(assays = list(logcounts = mh_expr),
+                            colData = mh_data, 
+                            # spatialCoordsNames requires column names in 
+                            # mh_data that contain xy-coordinates of cells
+                            spatialCoordsNames = c("X", "Y"))
+spe_mh
 ```
 
-Here, the cell labels are in the column 'Cell_ID' and sample labels are in 
-'samples' column in the SpatialExperiment object.
+Some components of the spe object that are frequently used include assays (the
+gene expression data are stored here - multiple assays can be stored in one spe
+object), colData (the cell characteristics are stored here), rowData (the gene
+characteristics can be stored here), spatialCoords (the x-y coordinates of each
+cell are stored here), reducedDims (any low embeddings data can be stored here),
+and imgData (any images from the data can be stored here).
 
-```{r hypothal_data_columns}
-colnames(colData(spe2))
+### Running clustSIGNAL
+
+ClustSIGNAL comes with many parameters that can be explored. Most of these
+parameters have default values and do not need to be specified when running the
+method, except three parameters that need input. These include the spe object,
+the colData column name containing sample names, and the colData column name
+containing cell IDs. Moreover, the spe object must have logcounts stored in
+assays section and cell locations stored in the spatialCoords section.
+
+Since we created the spe object earlier, we know that the logcounts and spatial
+coordinates are stored in the spe object. We can confirm this by just looking at
+the spe object.
+
+```{r hypothal_dataCheck}
+spe_mh
 ```
 
-## clustSIGNAL run
+Now, let us identify the column names containing cell IDs and sample names so we
+can use them for running clustSIGNAL.
 
-One of the important concepts to take into account when running multisample 
-analysis is batch effects. When gathering samples from different sources or 
-through different technologies/procedures, some technical batch effects might 
-be introduced into the dataset. We run clustSIGNAL in batch correction mode 
-simply by setting batch = TRUE. The method then uses [harmony](https://portals.broadinstitute.org/harmony/) 
-internally for batch correction.
+```{r hypothal_cell_column}
+spe_mh |> colData() |> head()
+```
 
-```{r clustSIGNAL_multiRun }
+Here, the cell IDs are in the column named "Cell_ID" and the samples are in the
+"samples" column.
+
+Now that we have the column names, and the spe object contains the relevant
+information, we can run clustSIGNAL with some default values. Here, clustSIGNAL
+will be run on the input spe object, with cell ID and sample names specified by
+the column names in samples and cells respectively. Keeping outputs = "a" will
+get us the final spe object as well as the dataframe of cluster numbers.
+
+Feel free to explore the data by modifying the input parameters. The **dimRed**
+parameter allows the use of specific low embeddings in the spe object for
+generation of the initial clusters. The **batch** and **batch_by** parameters
+can be used to specify whether to perform batch correction and what sample
+groups to use. By default, clustSIGNAL uses information from 30 nearest
+neighbours, but this can be modified by changing the value of the **NN**
+parameter. To change the weights used for adaptive smoothing, the **kernel** and
+**spread** parameters that control the type and spread of distribution,
+respectively, can be modified. Clustering parameters can be explored using the
+**clustParams** parameter list.
+
+```{r clustSIGNAL_run}
 set.seed(110)
-samples <- "samples"
-cells <- "Cell_ID"
-res_hyp <- clustSIGNAL(spe2, samples, cells, threads = 4, outputs = "a")
+smp_label <- "samples" # column name containing sample names
+c_label <- "Cell_ID" # column name containing cell IDs
+res_mh <- clustSIGNAL(spe_mh, samples = smp_label, cells = c_label, 
+                      outputs = "a")
 ```
 
-```{r hypothal_final_spe}
-spe2 <- res_hyp$spe_final
-spe2
+Since, we selected all output option, clustSIGNAL returns a list including a
+dataframe of cluster numbers and a spe object.
+
+```{r clustSIGNAL_output}
+res_mh |> names()
 ```
 
-## Clustering metrics
+The resulting spe object contains the adaptively smoothed gene expression data
+as an additional assay, initial clusters, entropy values, and clustSIGNAL
+clusters. Essentiallu, the final spe object contains data from the input spe
+object plus the outputs from the clustSIGNAL run.
 
-Clustering and entropy results can be calculated and visualized for each sample. 
-clustSIGNAL works well with samples that have more uniform distribution of 
-cells.
-
-```{r hypothal_samples}
-samplesList <- levels(spe2[[samples]])
-samplesList
+```{r hypothal_speFinal}
+res_mh$spe_final
+spe_mh <- res_mh$spe_final
 ```
+
+## 4. Assessing relevance of clusters
+
+In this section, we will analyse the results from clustSIGNAL through clustering
+metrics and visualisation.
+
+Clustering metrics such as ARI (adjusted rand index) and NMI (normalised mutual
+information) allow us to compare clustering performed by two methods. Here, we
+use ARI and NMI to compare clustSIGNAL clusters with published annotations -
+higher values mean more consensus between the two groups.
 
 ```{r hypothal_clusterMetrics}
-# calculating silhouette width per sample
-silWidthRC <- matrix(nrow = 0, ncol = 3)
-for (s in samplesList) {
-  speX <- spe2[, spe2[[samples]] == s]
-  clust_sub <- as.numeric(as.character(speX$clustSIGNAL))
-  cXg <- t(as.matrix(logcounts(speX)))
-  distMat <- distances(cXg)
-  silCluster <- as.matrix(silhouette(clust_sub, distMat))
-  silWidthRC <- rbind(silWidthRC, silCluster)
-}
-spe2$rcSil <- silWidthRC[, 3]
+samplesList <- spe_mh[[smp_label]] |> unique() # get unique sample names
 
-as.data.frame(colData(spe2)) %>%
-  group_by(samples) %>%
-  summarise(ARI = aricode::ARI(Cell_class, clustSIGNAL),
-            NMI = aricode::NMI(Cell_class, clustSIGNAL),
-            ASW = mean(rcSil),
-            min_Entropy = min(entropy),
-            max_Entropy = max(entropy),
-            mean_Entropy = mean(entropy))
+spe_mh |> colData() %>% 
+  as.data.frame() %>%
+  group_by(get(smp_label)) %>% 
+  # group cells by samples and for cells in each sample 
+  # calculate the following metrics
+  summarise(ARI = aricode::ARI(Cell_class, clustSIGNAL), # calculate ARI
+            NMI = aricode::NMI(Cell_class, clustSIGNAL), # calculate NMI
+            min_Entropy = min(entropy), # calculate minimum entropy
+            max_Entropy = max(entropy), # calculate minimum entropy
+            mean_Entropy = mean(entropy)) # calculate minimum entropy
 ```
 
-## Visualizing clustSIGNAL clusters
+The clustering output can also be visualised by plotting the spatial coordinates
+of cells and colouring by cluster numbers. Here, we use the plotReducedDim
+function from the scater R package for creating spatial plots. This requires the
+spatial coordinates to be added to the reducedDimension section of the spe
+object.
 
-clustSIGNAL performs clustering on all cells in the dataset in one run, thereby 
-generating the same clusters across multiple samples. The user does not need to 
-map cluster labels between samples. For example, cluster 1 represents the same 
-cell type in all three samples, without needing explicit mapping between 
-samples.
+```{r hypothal_addCoords}
+# add the spatial coordinates to the reduced dimension section 
+# for plotting with scater package
+reducedDim(spe_mh, "spatial") <- spatialCoords(spe_mh)
+```
+
+To specify that we want to create spatial plots, we just specify the low
+embedding name in dimred option, in this case it is "spatial".
 
 ```{r hypothal_spatialPlots}
-df_ent <- as.data.frame(colData(spe2))
-
-# spatial plot
-spt_clust <- df_ent %>%
-    ggplot(aes(x = spatialCoords(spe2)[, 1],
-               y = -spatialCoords(spe2)[, 2])) +
-    geom_scattermore(pointsize = 3, aes(colour = clustSIGNAL)) +
-    scale_color_manual(values = colors) +
-    facet_wrap(vars(samples), scales = "free", nrow = 1) +
-    labs(x = "x-coordinate", y = "y-coordinate") +
-    guides(color = guide_legend(title = "Clusters",
-                                override.aes = list(size = 3))) +
-    theme_classic() +
-    theme(text = element_text(size = 12),
-          axis.text.x = element_text(angle = 90, vjust = 0.5))
-
-box_clust <- list()
-for (s in samplesList) {
-  df_ent_sub <- as.data.frame(colData(spe2)[spe2[[samples]] == s, ])
-  # calculating median entropy of each cluster in a sample
-  celltype_ent <- df_ent_sub %>%
-    group_by(as.character(clustSIGNAL)) %>%
-    summarise(meanEntropy = median(entropy))
-  # reordering clusters by their median entropy
-  # low to high median entropy
-  cellOrder <- celltype_ent$meanEntropy
-  names(cellOrder) <- celltype_ent$`as.character(clustSIGNAL)`
-  cellOrder = sort(cellOrder)
-  df_ent_sub$clustSIGNAL <- factor(df_ent_sub$clustSIGNAL, 
-                                   levels = names(cellOrder))
-
-  # box plot of cluster entropy
-  colors_ent <- colors[as.numeric(names(cellOrder))]
-  box_clust[[s]] <- df_ent_sub %>%
-    ggplot(aes(x = clustSIGNAL, y = entropy, fill = clustSIGNAL)) +
-    geom_boxplot() +
-    scale_fill_manual(values = colors_ent) +
-    facet_wrap(vars(samples), nrow = 1) +
-    labs(x = "clustSIGNAL clusters", y = "Entropy") +
-    ylim(0, NA) +
-    theme_classic() +
-    theme(strip.text = element_blank(),
-          legend.position = "none",
-          text = element_text(size = 12),
-          axis.text.x = element_text(angle = 90, vjust = 0.5))
-}
-
-spt_clust / (patchwork::wrap_plots(box_clust[1:3], nrow = 1) +
-               plot_layout(axes = "collect")) +
-  plot_layout(guides = "collect", heights = c(5, 3)) +
-  plot_annotation(
-    title = "Spatial (top) and entropy (bottom) distributions of clusters")
+p1 <- scater::plotReducedDim(spe_mh, 
+                             # specify spatial low dimension
+                             dimred = "spatial", 
+                             colour_by = "clustSIGNAL", 
+                             point_alpha = 1, 
+                             point_size = 1) +
+  # to separate out the 3 samples in the dataset
+  facet_wrap(vars(spe_mh[[smp_label]]), scales = "free") 
+p1
 ```
 
-The spatial location (top) and entropy distribution (bottom) of the clusters 
-can be compared in a multisample analysis, providing spatial context of the 
-cluster cells and their neighbourhood compositions in the different samples.
+Here, the x and y axes are the x-y coordinates of the cells. The dataset
+contains 3 samples, so we have one plot per sample. ClustSIGNAL performs
+clustering using all cells in the dataset in one run, thereby identifying the
+same clusters across multiple samples in the dataset.
 
-## Visualising entropy spread and distribution
+We can also compare the clustering output with the annotated labels to assess
+how much of the manual annotation was captured by the method output.
 
-In multisample analysis, the spread (A) and spatial distribution (B) of region 
-entropy measures can be useful in assessing and comparing the tissue structure 
-in the samples.
+```{r hypothal_clusterCompare}
+table(spe_mh$Cell_class, spe_mh$clustSIGNAL)
+```
 
-```{r hypothal_entropyPlots}
-# Histogram of entropy spread
-hst_ent <- as.data.frame(colData(spe2)) %>%
+In this table, the rows show published manual annotations and columns show
+clustSIGNAL cluster labels. ClustSIGNAL is able to capture the distinct cell
+types and also identify subgroups in some cases - inhibitory and excitatory
+neurons.
+
+To assess how distinct these clusters are, we investigate the top marker genes
+in each cluster using the FindAllMarkers function in Seurat R package.
+
+```{r hypothal_seuObject}
+# we can convert the spe object into a Seurat (seu) object as below
+# since we do not have counts data, we've used logcounts as 
+# counts to be able to create the seu object
+seu_mh <- Seurat::as.Seurat(spe_mh, data = NULL, counts = "logcounts")
+seu_mh
+```
+
+Since we've used the logcounts as counts in this seu object, the two assay
+layers - counts and data - contain the same information. For finding cluster
+markers, we will use default values, which includes using the data layer
+containing logcounts.
+
+```{r hypothal_clusterMarkers}
+# to specify that the cluster number information is in clustSIGNAL column
+Idents(seu_mh) <- "clustSIGNAL"
+# this will identify marker genes in each cluster using default values
+markers_mh <- Seurat::FindAllMarkers(seu_mh)
+```
+
+We can now plot the top marker genes and their gene expression in each cell to
+see how distinct each cluster is.
+
+```{r hypothal_expHeatmap}
+# here we select the top 10 markers genes (with log fold change > 0.5) 
+# from each cluster, but you can modify the parameters to select 
+# more/less genes with higher/lower fold change
+top10 <- markers_mh %>%
+  group_by(cluster) %>%
+  dplyr::filter(avg_log2FC > 0.5) %>%
+  slice_head(n = 10) %>%
+  ungroup()
+
+# plotting the heatmap for top 10 marker genes using their logcounts ("data")
+Seurat::DoHeatmap(seu_mh, slot = "data", features = top10$gene) + NoLegend()
+```
+
+Here, the genes are shown along the y-axis and the cells, grouped by the cluster
+they belong to, are displayed along the x-axis. The values in the heatmap are
+logcounts of top 10 marker genes in each cluster.
+
+## 5. Exploring clustSIGNAL outputs
+
+Other than the cluster labels, clustSIGNAL also generates smoothed gene
+expression, initial cluster labels, and cell neihbourhood-specific entropy
+values. Other outputs such as nearest neighbour matrix, and initial cluster
+based neighbourhood compositions are also accessible by running clustSIGNAL
+functions sequentially.
+
+The *p1_clustering* function generates the initial cluster labels and adds them
+to the spe object, the *neighbourDetect* function produces nearest neighbour
+matrix and neighbourhood compositions, the *entropyMeasure* function adds
+entropy values to the spe object, the *adaptiveSmoothing* function adds smoothed
+gene expression to the spe object, and the *p2_clustering* function generates
+the final clusters and adds them to the spe object.
+
+Of these additional outputs, the entropy values can be valuable in exploring
+datasets to get a sense of the neighbourhood compositions of the cells,
+essentially revealing gene expression based tissue structure. Let us explore
+this with the two datasets available to us. First, we need to run clustSIGNAL on
+the seqFISH dataset to generate the appropriate data.
+
+```{r embryo_dataPrep_run}
+# to create spe object we need gene expression, cell metadata, and cell location
+spe_me <- SpatialExperiment(assays = list(logcounts = me_expr),
+                            colData = me_data, 
+                            # spatialCoordsNames requires column names in 
+                            # me_data that contain xy-coordinates of cells
+                            spatialCoordsNames = c("X", "Y"))
+reducedDim(spe_me, "spatial") <- spatialCoords(spe_me)
+
+set.seed(110)
+# "sample_id" column contains sample names
+# "uniqueID" column contains cell IDs
+res_me <- clustSIGNAL(spe_me, samples = "sample_id", cells = "uniqueID", 
+                      outputs = "a")
+spe_me <- res_me$spe_final
+spe_me
+```
+
+To explore the dataset, we can estimate the spread and distribution of the
+entropy values using histogram and spatial plots respectively.
+
+```{r compare_hist}
+# histogram plots to show entropy spread
+h1 <- spe_me |> colData() |> as.data.frame() %>% # plotting embryo data
   ggplot(aes(entropy)) +
   geom_histogram(binwidth = 0.05) +
-  facet_wrap(vars(samples), nrow = 1) +
   labs(x = "Entropy", y = "Number of regions") +
   theme_classic() +
   theme(text = element_text(size = 12))
 
-# Spatial plot showing sample entropy distribution
-spt_ent <- as.data.frame(colData(spe2)) %>%
-  ggplot(aes(x = spatialCoords(spe2)[, 1],
-             y = -spatialCoords(spe2)[, 2])) +
-  geom_scattermore(pointsize = 3,
-             aes(colour = entropy)) +
-  scale_colour_gradient2("Entropy", low = "grey", high = "blue") +
-  scale_size_continuous(range = c(0, max(spe2$entropy))) +
-  facet_wrap(vars(samples), scales = "free", nrow = 1) +
-  labs(x = "x-coordinate", y = "y-coordinate") +
+h2 <- spe_mh |> colData() |> as.data.frame() %>% # plotting hypothalamus data
+  ggplot(aes(entropy)) +
+  geom_histogram(binwidth = 0.05) +
+  # separate out the 3 samples in the dataset
+  facet_wrap(vars(get(smp_label)), nrow = 1) +
+  labs(x = "Entropy", y = "Number of regions") +
   theme_classic() +
-  theme(strip.text = element_blank(),
-        text = element_text(size = 12),
-        axis.text.x = element_text(angle = 90, vjust = 0.5))
+  theme(text = element_text(size = 12))
 
-hst_ent / spt_ent + plot_layout(heights = c(3,5)) +
-    plot_annotation(
-      title = "Entropy spread (top) and spatial distribution (bottom)")
+# spatial plots to show entropy distribution
+s1 <- scater::plotReducedDim(spe_me, # plotting embryo data
+                             # specify spatial low dimension
+                             dimred = "spatial", 
+                             # specify colour points by entropy
+                             colour_by = "entropy", 
+                             point_alpha = 1, 
+                             point_size = 1)
+s2 <- scater::plotReducedDim(spe_mh, # plotting hypothalamus data
+                             # specify spatial low dimension
+                             dimred = "spatial", 
+                             # specify colour points by entropy
+                             colour_by = "entropy", 
+                             point_alpha = 1, 
+                             point_size = 1) +
+  # to separate out the 3 samples in the dataset
+  facet_wrap(vars(spe_mh[[smp_label]]), scales = "free") 
+
+(h1 + h2) / (s1 + s2) + patchwork::plot_layout(widths = c(1, 3))
 ```
+
+The entropy plots help us gauge the "domainness" in the samples. For example,
+the neighbourhood entropy values in the mouse embryo data can go as low as 0,
+which would mean that this sample has many neighbouhoods that are completely
+homogeneous and could represent domains composed of one celltype. The spatial
+plot helps visualise where in the sample such homogeneous regions might be
+found. On the contrary, the neighbourhood entropy values in the mouse
+hypothalamus data are generally quite high, with no regions that are completely
+homogeneous.
+
+One thing to note is that these entropy values are based on 30 nearest
+neighbours in this example, and changing the **NN** parameter when running
+clustSIGNAL will generate different entropy values. Comparing entropy values
+from different neighbourhood sizes could be useful in estimating the size of the
+domain-like regions.
+
+## Summary
+
+::: summary
+-   ClustSIGNAL is a method developed to counter data sparsity by performing an
+    adaptive smoothing approach to generate new gene expression that is used for
+    clustering.
+
+-   The method comes with an ensemble of options that allow selection of
+    neighbourhood, weighting, batch correction, and clustering parameters.
+
+-   ClustSIGNAL can be run on datasets with mulitple samples and will identify
+    clusters in all samples in one run.
+
+-   ClustSIGNAL uses both gene expression and spatial information to generate
+    clusters from subcellular spatial transcriptomics data by stabilising the
+    expression of cells in homogeneous regions and preventing the loss of
+    distinct expression of cells in more heterogeneous regions.
+
+-   Neighbourhood entropy values generated by clustSIGNAL can be used for data
+    exploration to estimate the extent of "domainness" in tissue samples.
+:::
 
 <details>
 
