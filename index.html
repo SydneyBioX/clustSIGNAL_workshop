@@ -169,12 +169,12 @@
 </h2>
 <p>The clustSIGNAL package uses a SpatialExperiment object as input. We provide users with a number of parameters to explore and experiment with, as well as prior tested default values for quick runs. ClustSIGNAL can be used for single sample or multisample analysis with just one function call. Below is the list of the parameters offered and their possible values:</p>
 <ul>
-<li><p><strong>spe</strong> - SpatialExperiment object containing cell <a href="#id_#" title="Stored in the spatialCoords(spe) cell location section">spatial coordinates</a> matrix and <a href="#id_#" title="Stored under logcounts(spe) assay">normalized counts</a> of gene expression.</p></li>
-<li><p><strong>samples</strong> - column name in <a href="#id_#" title="Stored in the colData(spe) section">cell metadata</a> containing sample names.</p></li>
-<li><p><strong>cells</strong> - column name in <a href="#id_#" title="Stored in the colData(spe) section">cell metadata</a> containing cell IDs.</p></li>
-<li><p><strong>dimRed</strong> - dimensionality reduction method name in <a href="#id_#" title="Stored in the reducedDimNames(spe) embeddings section">low embedding data</a>. Default value is “None”, in which case PCA is calculated and used as low dimension data.</p></li>
+<li><p><strong>spe</strong> - SpatialExperiment object containing cell spatial coordinates (stored in the spatialCoords(spe) cell location section) matrix and normalized counts (stored under logcounts(spe) assay) of gene expression.</p></li>
+<li><p><strong>samples</strong> - column name in cell metadata (stored in the colData(spe) section) containing sample names.</p></li>
+<li><p><strong>cells</strong> - column name in cell metadata (stored in the colData(spe) section) containing cell IDs.</p></li>
+<li><p><strong>dimRed</strong> - dimensionality reduction method name in low embedding data (stored in the reducedDimNames(spe) embeddings section). Default value is “None”, in which case PCA is calculated and used as low dimension data.</p></li>
 <li><p><strong>batch</strong> - whether batch correction should be performed. Default value is FALSE.</p></li>
-<li><p><strong>batch_by</strong> - column name in <a href="#id_#" title="Stored in the colData(spe) section">cell metadata</a> containing the groups to use for batch correction.</p></li>
+<li><p><strong>batch_by</strong> - column name in cell metadata (stored in the colData(spe) section) containing the groups to use for batch correction.</p></li>
 <li><p><strong>NN</strong> - neighbourhood size in terms of the number of nearest neighbours to consider. Value should be &gt; 1. Default value is 30.</p></li>
 <li><p><strong>kernel</strong> - type of weight distribution to use. Can be Gaussian (default) or exponential distribution.</p></li>
 <li><p><strong>spread</strong> - value of distribution parameter - standard deviation of Gaussian distribution or rate of exponential distribution. Default value is 0.05, recommended for Gaussian distribution. For exponential distribution, recommended value is 20.</p></li>
