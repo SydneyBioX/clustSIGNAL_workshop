@@ -86,17 +86,17 @@ The core steps involved in the method are sequential:
 
 The clustSIGNAL package uses a SpatialExperiment object as input. We provide users with a number of parameters to explore and experiment with, as well as prior tested default values for quick runs. ClustSIGNAL can be used for single sample or multisample analysis with just one function call. Below is the list of the parameters offered and their possible values:
 
--   **spe** - SpatialExperiment object containing cell [spatial coordinates](## "Stored in the spatialCoords(spe) cell location section") matrix and [normalized counts](## "Stored under logcounts(spe) assay") of gene expression.
+-   **spe** - SpatialExperiment object containing cell spatial coordinates (stored in the spatialCoords(spe) cell location section) matrix and normalized counts (stored under logcounts(spe) assay) of gene expression.
 
--   **samples** - column name in [cell metadata](## "Stored in the colData(spe) section") containing sample names.
+-   **samples** - column name in cell metadata (stored in the colData(spe) section) containing sample names.
 
--   **cells** - column name in [cell metadata](## "Stored in the colData(spe) section") containing cell IDs.
+-   **cells** - column name in cell metadata (stored in the colData(spe) section) containing cell IDs.
 
--   **dimRed** - dimensionality reduction method name in [low embedding data](## "Stored in the reducedDimNames(spe) embeddings section"). Default value is "None", in which case PCA is calculated and used as low dimension data.
+-   **dimRed** - dimensionality reduction method name in low embedding data (stored in the reducedDimNames(spe) embeddings section). Default value is "None", in which case PCA is calculated and used as low dimension data.
 
 -   **batch** - whether batch correction should be performed. Default value is FALSE.
 
--   **batch_by** - column name in [cell metadata](## "Stored in the colData(spe) section") containing the groups to use for batch correction.
+-   **batch_by** - column name in cell metadata (stored in the colData(spe) section) containing the groups to use for batch correction.
 
 -   **NN** - neighbourhood size in terms of the number of nearest neighbours to consider. Value should be \> 1. Default value is 30.
 
